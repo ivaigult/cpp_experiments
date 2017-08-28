@@ -26,12 +26,11 @@ int main(int argc, char** argv)
     assert('f' == PP_IF(0, 't', 'f') && "Unexpected if result");
     assert('t' == PP_IF(1, 't', 'f') && "Unexpected if result");
     assert('t' == PP_IF(2, 't', 'f') && "Unexpected if result");
-
     
     do {
 #define INC_X(it) ++x;
         int x = 0;
-        PP_FOR(0, 10, INC_X);
+        PP_FOR(0, 50, INC_X);
         assert(x == 10);
 #undef INC_X
     } while(0);

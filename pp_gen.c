@@ -5,7 +5,7 @@
         for(int x = 0; x < math_size; ++x) {                            \
             printf("#define __" #func_name "_%d %d\n", x, (operation)); \
         }                                                               \
-        printf("#define " #func_name "(x) CAT2(__" #func_name "_, x)\n");   \
+        printf("#define " #func_name "(x) CAT2(__" #func_name "_, x)\n"); \
     } while(0)
 
 #define BINARY_FUNCTION(func_name, math_size, operation) do {           \
@@ -51,6 +51,17 @@ int main(int argc, char** argv)
     BINARY_FUNCTION(PP_MUL, math_size, (x * y) % math_size);
     BINARY_FUNCTION(PP_DIV, math_size, (x / (y ? y : 1) ) % math_size);
 
+    for(int i = 0; i < math_size; ++i) {
+        printf("#define PP_INDEX_SEQ_%d ", i);
+        for(int j = 0; j < i; ++j) {
+            printf("%d%s", j, j == i - 1 ? "" : ", ");
+        }
+        printf("\n");
+    }
+
+    printf("#define PP_INDEX_SEQ PP_INDEX_SEQ_%d\n", math_size - 1);
+
+    
     printf("#define PP_LEN(...) __PP_LEN(~, ## __VA_ARGS__");
     for(int i = 0; i < math_size; ++i) {
         printf(", %d", math_size - i - 1); 
