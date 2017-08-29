@@ -27,6 +27,7 @@ int main(int argc, char** argv)
     for(int ii = 0; ii < math_size; ++ii) {
         printf("#define PP_UINT_%d %d\n", ii, ii);
     }
+    printf("#define PP_UINT_MAX %d\n", math_size - 1);
 
 
     printf("#define CAT2(x0, x1)         x0 ## x1\n");
@@ -61,17 +62,20 @@ int main(int argc, char** argv)
 
     printf("#define PP_INDEX_SEQ PP_INDEX_SEQ_%d\n", math_size - 1);
 
+    printf("#define PP_GET_NTH(n, ...) __PP_EVAL_1(__PP_GET_NTH(n, ##__VA_ARGS__))\n");
+    printf("#define __PP_GET_NTH(n, ...) PP_DEFER_2(__PP_GET_LAST)(PP_DEFER_1(CAT2) (PP_INDEX_SEQ_, PP_SUB(PP_UINT_MAX, n)), ##__VA_ARGS__)\n");
     
-    printf("#define PP_LEN(...) __PP_LEN(~, ## __VA_ARGS__");
+    printf("#define PP_LEN(...) __PP_GET_LAST(__VA_ARGS__");
     for(int i = 0; i < math_size; ++i) {
         printf(", %d", math_size - i - 1); 
     }
     printf(", 0)\n");
-    printf("#define __PP_LEN(u, ");
-    for(int i = 0; i < math_size - 1; ++i) {
-        printf("%sx%d", i ? ", " : "", i);
+
+    printf("#define __PP_GET_LAST(");
+    for(int i = 0; i < math_size; ++i) {
+        printf("x%d%s", i, i ? ", " : "");
     }
-    printf(", len, ...) len\n");
+    printf("last, ...) last\n");
 
     printf("#define PP_IF(cond, then_do, else_do) __PP_IF(PP_BOOL(cond), then_do, else_do)\n");
     printf("#define __PP_IF(cond, then_do, else_do) CAT2(__PP_IF_, cond)(then_do, else_do)\n");
